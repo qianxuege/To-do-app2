@@ -57,6 +57,27 @@ if (logoutButton) {
 
 const authStatus = document.getElementById("auth-status");
 const loginLink = document.getElementById("login-link");
+const todoForm = document.getElementById("todo-form");
+const todoError = document.getElementById("todo-error");
+const todoHelp = document.getElementById("todo-help");
+const todoSummary = document.getElementById("todo-summary");
+const todaysTodosEl = document.getElementById("todays-todos");
+const todosListEl = document.getElementById("todos-list");
+
+function setTodoError(msg) {
+  if (todoError) todoError.textContent = msg || "";
+}
+
+function setTodoHelp(msg) {
+  if (todoHelp) todoHelp.textContent = msg || "";
+}
+
+function setTodoFormEnabled(enabled) {
+  if (!todoForm) return;
+  Array.from(todoForm.elements).forEach((element) => {
+    element.disabled = !enabled;
+  });
+}
 
 const token = getToken();
 const user = getUser();
@@ -64,19 +85,14 @@ if (!token) {
   if (authStatus) authStatus.textContent = "You are not logged in.";
   if (loginLink) loginLink.style.display = "inline-block";
   if (logoutButton) logoutButton.style.display = "none";
+  setTodoFormEnabled(false);
+  setTodoHelp("Log in to add and manage tasks.");
 } else {
   if (authStatus) authStatus.textContent = `Logged in as ${user?.username || "user"}`;
   if (loginLink) loginLink.style.display = "none";
   if (logoutButton) logoutButton.style.display = "inline-block";
-}
-
-const todoForm = document.getElementById("todo-form");
-const todoError = document.getElementById("todo-error");
-const todaysTodosEl = document.getElementById("todays-todos");
-const todosListEl = document.getElementById("todos-list");
-
-function setTodoError(msg) {
-  if (todoError) todoError.textContent = msg || "";
+  setTodoFormEnabled(true);
+  setTodoHelp("Add a task with a due date to keep your list current.");
 }
 
 function createTodoLi(todo) {
@@ -102,6 +118,12 @@ async function loadTodos() {
   if (!token) return;
   if (!todosListEl) return;
   const data = await apiFetch("/api/todos/", { method: "GET" });
+
+  if (todoSummary) {
+    const completedCount = data.filter((todo) => todo.completed).length;
+    const openCount = data.length - completedCount;
+    todoSummary.textContent = `${openCount} open task${openCount === 1 ? "" : "s"}, ${completedCount} completed.`;
+  }
 
   todosListEl.replaceChildren();
   if (!data.length) {
@@ -197,4 +219,3 @@ if (todosListEl) {
 if (token) {
   Promise.all([loadTodos(), loadTodaysTodos()]).catch((err) => setTodoError(err.message));
 }
-
