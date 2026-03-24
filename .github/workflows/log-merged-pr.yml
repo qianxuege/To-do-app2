@@ -1,0 +1,45 @@
+name: Log merged PR in README
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: write
+
+jobs:
+  append-readme-log:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      - name: Append merged PR entry to README
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          MERGED_AT: ${{ github.event.pull_request.merged_at }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          MERGE_DATE="${MERGED_AT%%T*}"
+          printf -- '- %s %s %s\n' "$PR_AUTHOR" "$MERGE_DATE" "$PR_TITLE" >> README.md
+
+      - name: Commit README update
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet README.md; then
+            exit 0
+          fi
+
+          git add README.md
+          git commit -m "docs: log merged PR #${PR_NUMBER} in README"
+          git push origin "HEAD:${BASE_REF}"

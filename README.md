@@ -71,3 +71,6 @@ python manage.py send_daily_reminders --date 2026-03-19
 - Tokens are stored using DRF's `rest_framework.authtoken` app.
 - If you prefer real emails instead of console output, replace `EMAIL_BACKEND` in `config/settings.py`.
 
+## Approved Contributions
+
+This section is updated automatically after pull requests are merged.
