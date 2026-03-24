@@ -1,0 +1,57 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Multi-user TODO</title>
+  </head>
+  <body>
+    <h1>TODO App</h1>
+
+    <div id="auth-area">
+      <div id="auth-status"></div>
+      <a id="login-link" href="/login/">Log in</a>
+      <button id="logout-button" type="button" style="display:none;">Log out</button>
+    </div>
+
+    <hr />
+
+    <section>
+      <h2>Add a task</h2>
+      <form id="todo-form">
+        <div>
+          <label>
+            Title
+            <input type="text" name="title" required maxlength="255" />
+          </label>
+        </div>
+        <div>
+          <label>
+            Due date
+            <input type="date" name="due_date" required />
+          </label>
+        </div>
+        <button type="submit">Add</button>
+      </form>
+      <p id="todo-error" style="color:crimson;"></p>
+    </section>
+
+    <hr />
+
+    <section>
+      <h2>Today's tasks</h2>
+      <ul id="todays-todos"></ul>
+    </section>
+
+    <hr />
+
+    <section>
+      <h2>Your tasks</h2>
+      <ul id="todos-list"></ul>
+    </section>
+
+    <script src="{% static 'js/app.js' %}"></script>
+  </body>
+</html>
+

@@ -1,0 +1,44 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register</title>
+  </head>
+  <body data-mode="register">
+    <h1>Create account</h1>
+
+    <form id="auth-form">
+      <div>
+        <label>
+          Username
+          <input type="text" name="username" required minlength="3" maxlength="150" />
+        </label>
+      </div>
+      <div>
+        <label>
+          Email
+          <input type="email" name="email" required />
+        </label>
+      </div>
+      <div>
+        <label>
+          Password
+          <input type="password" name="password" required minlength="8" />
+        </label>
+      </div>
+      <button type="submit">Create account</button>
+    </form>
+
+    <p id="auth-error" style="color:crimson;"></p>
+
+    <p>
+      Already have an account?
+      <a href="/login/">Log in</a>
+    </p>
+
+    <script src="{% static 'js/auth.js' %}"></script>
+  </body>
+</html>
+
